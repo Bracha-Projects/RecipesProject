@@ -5,7 +5,6 @@ import { UpdateForm } from './UserAvatar';
 import { Reducer, url } from './appLayout';
 import axios from 'axios';
 import { UserID } from './LogIn';
-import { Link } from 'react-router-dom';
 
 const UserUpdateForm = () => {
   const id = useContext(UserID);
@@ -62,7 +61,7 @@ const UserUpdateForm = () => {
   return (
     <>
       {updateForm &&
-        <Box  width={{ width: 400 }} sx={{ padding: 2 ,justifyContent:"center"}}>
+        <Box width={{ width: 400 }} sx={{ padding: 2, justifyContent: "center" }}>
           <form action="" onSubmit={handleSubmit}>
             <TextField
               label="First Name"

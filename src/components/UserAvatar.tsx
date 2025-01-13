@@ -47,6 +47,7 @@ export default function LetterAvatars() {
     <>
     <div style={{display:"flex"}}>
     <UpdateForm.Provider value={{updateForm:OpenUpdateForm,openUpdateForm:setUpdateForm}}>
+      <Button variant='outlined' onClick={()=>{window.location.href='/'}}>Sign Out</Button>
       <Avatar {...stringAvatar((user.firstName || ' ') + ' ' + user.lastName || '  ')} />
       <Grid container>
         <Grid size={4}>
