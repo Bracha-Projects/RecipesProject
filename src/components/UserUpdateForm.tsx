@@ -4,20 +4,11 @@ import { User } from './user';
 import { UpdateForm } from './UserAvatar';
 import { Reducer, url } from './appLayout';
 import axios from 'axios';
-import { UserID } from './LogIn';
 
 const UserUpdateForm = () => {
-  const id = useContext(UserID);
   const { user, userDispatch } = useContext(Reducer);
   const { updateForm, openUpdateForm } = useContext(UpdateForm);
-  const [updatedUser, setUpdatedUser] = useState<User>({
-    firstName: user.firstName || '',
-    lastName: user.lastName || '',
-    email: user.email || '',
-    password: user.password || '',
-    address: user.address || '',
-    phoneNumber: user.phoneNumber || ''
-  });
+  const [updatedUser, setUpdatedUser] = useState<User>({} as User);
   const [error, setError] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,10 +33,9 @@ const UserUpdateForm = () => {
         phone: updatedUser.phoneNumber
       }, {
         headers: {
-          'user-id': id?.id // Replace with the actual user ID
+          'user-id': user.id // Replace with the actual user ID
         }
       });
-
     }
     catch (e) {
       console.error(e);
