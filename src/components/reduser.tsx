@@ -1,12 +1,12 @@
 import { useReducer } from "react";
 import { User } from "./user";
 
+export type Action = {
+  type: string;
+  data: Partial<User>;
+};
 export default () => {
-  type Action = {
-    type: string;
-    data: Partial<User>;
-  };
-
+  
   const initialState: User = {
     firstName: '',
     lastName: '',

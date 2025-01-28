@@ -66,7 +66,7 @@ const Login = ({ state, onClose }: { state: boolean, onClose: () => void }) => {
               <Button type="submit" fullWidth variant="contained" sx={{ marginTop: 2 }}>
                 Login
               </Button>
-            </form>
+            </form> 
           </Box>
         </Modal>
         {LoggedIn && <LetterAvatars></LetterAvatars>}

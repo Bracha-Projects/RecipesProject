@@ -2,13 +2,13 @@ import { createContext } from "react";
 import HomePage from "./HomePage"
 import {Outlet} from "react-router"
 import { User } from "./user";
-import useReduser from "./reduser";
+import useReduser, { Action } from "./reduser";
 import NavBar from "./navBar";
 
 export const url = 'http://localhost:3000/api/user'
 export const Reducer = createContext<{
   user: User; 
-  userDispatch: React.Dispatch<any>;
+  userDispatch: React.Dispatch<Action>;
 }>({
   user: {email:'', password:''},
   userDispatch: () => {}
