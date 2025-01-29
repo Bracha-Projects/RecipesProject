@@ -1,14 +1,13 @@
 import React, { useContext, useState } from 'react';
-import { TextField, Button, Box } from '@mui/material';
-import { User } from './user';
-import { UpdateForm } from './UserAvatar';
-import { Reducer, url } from './appLayout';
+import { TextField, Button, Box, Modal, Container } from '@mui/material';
+import { User } from '../types/user';
+import { Reducer, url } from './AppLayout';
 import axios from 'axios';
 
-const UserUpdateForm = () => {
+export default () => {
   const { user, userDispatch } = useContext(Reducer);
-  const { updateForm, openUpdateForm } = useContext(UpdateForm);
-  const [updatedUser, setUpdatedUser] = useState<User>({} as User);
+  const [updateForm, openUpdateForm] = useState(false);
+  const [updatedUser, setUpdatedUser] = useState<User>(user);
   const [error, setError] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,6 +24,7 @@ const UserUpdateForm = () => {
       data: updatedUser,
     });
     try {
+      console.log('Sending update request with user ID:', user.id);
       const res = await axios.put(url + '/', {
         firstName: updatedUser.firstName,
         lastName: updatedUser.lastName,
@@ -50,8 +50,15 @@ const UserUpdateForm = () => {
 
   return (
     <>
-      {updateForm &&
-        <Box width={{ width: 400 }} sx={{ padding: 2, justifyContent: "center" }}>
+      <Container maxWidth="lg">
+        <Box display="flex"
+          flexDirection={{ xs: 'column', sm: 'row' }}
+          gap={1}>
+          <Button fullWidth color="primary" variant="contained" onClick={() => openUpdateForm(true)}>Update</Button>
+        </Box>
+      </Container>
+      <Modal open={updateForm}>
+        <Box sx={{ width: 300, padding: 2, backgroundColor: 'white', margin: 'auto', marginTop: '10%' }}>
           <form action="" onSubmit={handleSubmit}>
             <TextField
               label="First Name"
@@ -101,9 +108,8 @@ const UserUpdateForm = () => {
             </Button>
           </form>
         </Box>
-      }
+      </Modal>
     </>
   );
 };
 
-export default UserUpdateForm

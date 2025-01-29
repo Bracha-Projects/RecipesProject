@@ -1,38 +1,52 @@
 import { createContext, Dispatch, SetStateAction, useState } from "react"
 
 import {
+    Box,
     Button,
-    Grid2 as Grid,
+    Card,
+    Container,
 } from "@mui/material";
 import Login from "./LogIn";
+import UserAvatar from "./UserAvatar";
+import UserUpdateForm from "./UserUpdateForm";
 
-export const IsLoggedIn = createContext<{LoggedIn:boolean;setLoggedIn:Dispatch<SetStateAction<boolean>>}>({ LoggedIn: false, setLoggedIn: () => { } });
+export const IsLoggedIn = createContext<{ LoggedIn: boolean; setLoggedIn: Dispatch<SetStateAction<boolean>> }>({ LoggedIn: false, setLoggedIn: () => { } });
 
 const HomePage = () => {
-    const [mode, setMode] = useState<'signIn'|'signUp'>('signIn');
+    const [mode, setMode] = useState<'signIn' | 'signUp'>('signIn');
     const [LoggedIn, setLoggedIn] = useState(false);
-    const [showModal, setShowModal] = useState(false); 
-    return(
+    const [showModal, setShowModal] = useState(false);
+    return (
         <>
             <IsLoggedIn.Provider value={{ LoggedIn, setLoggedIn }}>
-                <Grid container>
-                    <Grid justifyContent="flex-start" alignItems="flex-start" size={4}>
-                        {LoggedIn  ?null:
-                        <div style={{display:"flex",alignContent:"flex-start"}}>
-                            <Button color="primary" variant="outlined" onClick={() => {setMode('signIn');setShowModal(true)}} >
-                                Sign in
-                            </Button>
-                            <Button  color="primary" variant="outlined" onClick={() => {setMode('signUp');setShowModal(true)}} >
-                                Sign up
-                            </Button>
-                        </div>
+                <Container maxWidth="lg" >
+                    <Box
+                        display="flex"
+                        flexDirection={{ xs: 'column', sm: 'row' }}
+                        gap={1}
+                    >
+                        {LoggedIn ? <></> : <>
+                            <Box >
+                                <Button color="primary" variant="contained" onClick={() => { setMode('signIn'); setLoggedIn(true); setShowModal(true) }} >
+                                    Sign in
+                                </Button>
+                            </Box>
+                            <Box >
+                                <Button color="primary" variant="contained" onClick={() => { setMode('signUp'); setLoggedIn(true); setShowModal(true) }}>
+                                    Sign up
+                                </Button>
+                            </Box>
+                        </>
                         }
-                       {showModal&&<Login state={mode==='signIn'} onClose={() => setShowModal(false)}/>}
-                    </Grid>
-                </Grid>
+                        {LoggedIn && showModal && <Login state={mode === 'signIn'} Close={() => setShowModal(false)} showModal={showModal} />}
+                        {LoggedIn && !showModal && <UserAvatar></UserAvatar>}
+                        {LoggedIn && !showModal && <UserUpdateForm></UserUpdateForm>}
+                    </Box>
+                </Container>
             </IsLoggedIn.Provider>
         </>
-)};
+    )
+};
 
 
 

@@ -1,4 +1,4 @@
-export default ()=>
+export default () =>
 {
     return(<h1>About</h1>)
 }

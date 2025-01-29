@@ -1,13 +1,13 @@
 import { useReducer } from "react";
-import { User } from "./user";
+import { User } from "../types/user";
 
 export type Action = {
   type: string;
   data: Partial<User>;
 };
-export default () => {
-  
+const Reduce = () => {
   const initialState: User = {
+    id: 0,
     firstName: '',
     lastName: '',
     email: '',
@@ -20,9 +20,7 @@ export default () => {
     switch (action.type) {
       case 'Login':
         return {
-          ...state,
-          email: action.data.email || '',
-          password: action.data.password || '',
+          ...state,...action.data
         };
       case 'Update':
         return { ...state, ...action.data };
@@ -34,4 +32,5 @@ export default () => {
   const [user, userDispatch] = useReducer(userReducer, initialState);
   return { user, userDispatch };
 }
+export default Reduce;
 
