@@ -1,15 +1,16 @@
 import React, { useContext, useState } from 'react';
-import { TextField, Button, Box, Modal, Container } from '@mui/material';
+import { TextField, Button, Box, Modal} from '@mui/material';
 import { User } from '../types/user';
-import { Reducer, url } from './AppLayout';
 import axios from 'axios';
-
-export default () => {
+import {setError} from '../redux/ErrorSlice'
+import { useDispatch, useSelector } from 'react-redux';
+import { StoreType } from '../redux/Store';
+import { Reducer, url } from '../App';
+export default ({updateForm,closeForm}:{updateForm:boolean,closeForm:()=>void}) => {
   const { user, userDispatch } = useContext(Reducer);
-  const [updateForm, openUpdateForm] = useState(false);
-  const [updatedUser, setUpdatedUser] = useState<User>(user);
-  const [error, setError] = useState('');
-
+  const [updatedUser, setUpdatedUser] = useState<User>(user);  
+  const error = useSelector((state: StoreType) => state.ErrorMessage.errorMessage);
+  const dispatch = useDispatch();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUpdatedUser({
       ...updatedUser,
@@ -38,28 +39,47 @@ export default () => {
       });
     }
     catch (e) {
-      console.error(e);
-      setError("An error occurred while updating user.");
-      alert(e);
+      if (axios.isAxiosError(error)) {
+        const status = error.response?.status;
+        switch (status) {
+          case 400:
+            dispatch(setError("Bad Request: The server could not understand the request due to invalid syntax."));
+            break;
+          case 401:
+            dispatch(setError("Unauthorized: Access is denied due to invalid credentials."));
+            break;
+          case 403:
+            dispatch(setError("Forbidden: You do not have permission to access this resource."));
+            break;
+          default:
+            dispatch(setError("An unexpected error occurred."));
+            break;
+        }
+      } else {
+        dispatch(setError("An unexpected error occurred."));
+      }
     }
     finally {
-      openUpdateForm(false);
+      closeForm();
       setError('');
     }
   };
 
   return (
     <>
-      <Container maxWidth="lg">
-        <Box display="flex"
-          flexDirection={{ xs: 'column', sm: 'row' }}
-          gap={1}>
-          <Button fullWidth color="primary" variant="contained" onClick={() => openUpdateForm(true)}>Update</Button>
-        </Box>
-      </Container>
       <Modal open={updateForm}>
-        <Box sx={{ width: 300, padding: 2, backgroundColor: 'white', margin: 'auto', marginTop: '10%' }}>
-          <form action="" onSubmit={handleSubmit}>
+        <Box
+          sx={{
+            width: 300,
+            padding: 2,
+            backgroundColor: 'white',
+            margin: 'auto',
+            marginTop: '10%',
+            maxHeight: '80vh', 
+            overflowY: 'auto'  
+          }}
+        >
+          <form onSubmit={handleSubmit}>
             <TextField
               label="First Name"
               value={updatedUser.firstName}

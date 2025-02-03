@@ -1,20 +1,18 @@
-import React, { createContext, FormEvent, useContext, useRef, useState } from 'react';
-import axios, { AxiosError } from "axios"
+import { FormEvent, useContext, useRef } from 'react';
+import axios from "axios"
 import { Modal, Box, TextField, Button } from '@mui/material';
-import { IsLoggedIn } from './HomePage';
-import LetterAvatars from './UserAvatar';
-import { Reducer, url } from './AppLayout';
+import { useDispatch } from 'react-redux';
+import { setError } from '../redux/ErrorSlice'
+import { IsLoggedIn, Reducer, url } from '../App';
 
-export default ({ state, Close, showModal }: { state: boolean, Close: () => void,showModal:boolean }) => {
-  const { user, userDispatch } = useContext(Reducer);
-  const { LoggedIn, setLoggedIn } = useContext(IsLoggedIn);
+export default ({ state, Close, showModal }: { state: boolean, Close: () => void, showModal: boolean }) => {
+  const { userDispatch } = useContext(Reducer);
+  const { setLoggedIn } = useContext(IsLoggedIn);
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
-
+  const dispatch = useDispatch();
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    console.log("Email:", emailRef.current?.value);
-    console.log("Password:", passwordRef.current?.value);
     try {
       const str = url + '/' + (state === true ? 'login' : 'register');
       const res = await axios.post(
@@ -42,14 +40,26 @@ export default ({ state, Close, showModal }: { state: boolean, Close: () => void
       }
     }
     catch (error) {
-      setLoggedIn(false);
       if (axios.isAxiosError(error)) {
-        console.error(error.response?.data); // Log the error response for debugging
-        alert("An error occurred: " + error.response?.data.message || "An unknown error occurred.");
-    } else {
-        console.error(error);
-        alert("An unexpected error occurred.");
-    }
+        const status = error.response?.status;
+        switch (status) {
+          case 400:
+            dispatch(setError("Bad Request: The server could not understand the request due to invalid syntax."));
+            break;
+          case 401:
+            dispatch(setError("Unauthorized: Access is denied due to invalid credentials."));
+            break;
+          case 403:
+            dispatch(setError("Forbidden: You do not have permission to access this resource."));
+            break;
+          default:
+            dispatch(setError("An unexpected error occurred."));
+            break;
+        }
+      } else {
+        dispatch(setError("An unexpected error occurred."));
+      }
+      setLoggedIn(false);
     }
     finally {
       emailRef.current!.value = ''

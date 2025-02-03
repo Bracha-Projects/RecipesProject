@@ -1,10 +1,15 @@
 
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { User } from "../types/user";
 
-type Recipe = {
+export type Recipe = {
     id: number,
-    title: string
+    title: string,
+    description: string,
+    ingredients: string[],
+    instructions: string[],
+    authorId: number,
 }
 
 export const fetchData = createAsyncThunk('recipes/fetch',
@@ -24,7 +29,21 @@ export const addRecipe = createAsyncThunk('recipes/add',
     async (recipe:Recipe, thunkAPI) => {
         try {
             console.log('in async thunk');
-            const response = await axios.get('http://localhost:3000/api/recipes')
+            console.log(recipe);
+            
+            const response = await axios.post('http://localhost:3000/api/recipes/',
+                {
+                    title: recipe.title,
+                    description: recipe.description,
+                    ingredients: recipe.ingredients,
+                    instructions: recipe.instructions,
+                }
+                , {
+                    headers: {
+                        'user-id': recipe.authorId
+                    }
+                }
+            )
             return response.data
         }
         catch (e) {
@@ -37,7 +56,7 @@ const recipesSlice = createSlice({
     name: 'recipes',
     initialState: { list: [] as Recipe[], loading: true },
     reducers: {
-        
+
     },
     extraReducers: (builder) => {
         builder
@@ -54,7 +73,7 @@ const recipesSlice = createSlice({
             .addCase(addRecipe.fulfilled,
                 (state, action) => {
                     state.list.push(action.payload);
-            })
+                })
             .addCase(addRecipe.rejected,
                 (state, action) => {
                     console.log('add recipe failed', action.payload);

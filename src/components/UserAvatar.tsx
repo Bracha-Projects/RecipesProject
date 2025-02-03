@@ -1,10 +1,7 @@
-import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
-import { Button, Grid2 as Grid } from '@mui/material';
-import { createContext, Dispatch, SetStateAction, useContext, useState } from 'react';
-import { Reducer } from './AppLayout';
-import { Link } from 'react-router-dom';
-import { IsLoggedIn } from './HomePage';
+import { Grid2 as Grid } from '@mui/material';
+import { useContext } from 'react';
+import { Reducer } from '../App';
 
 function stringToColor(string: string = ' ') {
   let hash = 0;
@@ -24,22 +21,20 @@ function stringToColor(string: string = ' ') {
 
 export default () => {
   const { user } = useContext(Reducer);
-  const {LoggedIn,setLoggedIn} = useContext(IsLoggedIn);
-  const firstLetter = user.firstName? user.firstName[0] : ''
-  const secondLetter = user.lastName? user.lastName[0] : ''
+  const firstLetter = user.firstName ? user.firstName[0].toLowerCase() : ''
+  const secondLetter = user.lastName ? user.lastName[0].toLowerCase() : ''
   return (
     <>
       <div style={{ display: "flex" }}>
-          <Avatar
-            sx={{ bgcolor: stringToColor((user.firstName || ' ') + ' ' + user.lastName || '  ')}}
-            children = {firstLetter + secondLetter}
-          />
-          <Grid container>
-            <Grid size={4}>
-            </Grid>
+        <Avatar
+          sx={{ bgcolor: stringToColor((user.firstName || ' ') + ' ' + user.lastName || '  ') }}
+          children={firstLetter + secondLetter}
+        />
+        <Grid container>
+          <Grid size={4}>
           </Grid>
+        </Grid>
       </div>
-      <Button color="primary" variant="contained" onClick={() => { setLoggedIn(false)}}>Sign Out</Button>
     </>
   );
 }

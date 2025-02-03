@@ -1,9 +1,11 @@
 import { combineSlices, configureStore } from "@reduxjs/toolkit";
 import recipesSlice from "./RecipesSlice";
+import { ErrorMessage } from "./ErrorSlice";
 
 const store = configureStore({
     reducer: combineSlices(
-        recipesSlice
+        recipesSlice,
+        ErrorMessage
     )
 });
 
