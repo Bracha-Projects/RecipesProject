@@ -28,13 +28,13 @@ const App = () => {
     const [LoggedIn, setLoggedIn] = useState(false);
     return (<>
         <ThemeProvider theme={theme}>
-            <IsLoggedIn.Provider value={{ LoggedIn, setLoggedIn }}>
-                <Reducer.Provider value={{ user, userDispatch }}>
+            <IsLoggedIn value={{ LoggedIn, setLoggedIn }}>
+                <Reducer value={{ user, userDispatch }}>
                     <Provider store={store}>
                         <RouterProvider router={Router} />
                     </Provider>
-                </Reducer.Provider>
-            </IsLoggedIn.Provider>
+                </Reducer>
+            </IsLoggedIn>
         </ThemeProvider>
     </>)
 }
